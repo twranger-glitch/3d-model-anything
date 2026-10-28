@@ -8,7 +8,11 @@ permissions:
   contents: read
 jobs:
   ipa:
-    runs-on: macos-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-26, macos-26-intel, macos-15-intel]
+    runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
       - name: Pick newest Xcode
@@ -34,5 +38,5 @@ jobs:
           zip -qry HouseCapture-unsigned.ipa Payload
       - uses: actions/upload-artifact@v4
         with:
-          name: HouseCapture-unsigned-ipa
+          name: HouseCapture-unsigned-ipa-${{ matrix.os }}
           path: apps/house-capture/HouseCapture-unsigned.ipa
